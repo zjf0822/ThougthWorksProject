@@ -21,8 +21,24 @@ public class World extends JPanel implements Runnable{
     public World(int row, int col){
         this.ROW = row;
         this.COL = col;
+        initWorld();
         randomState(RATE, SEED);
 
+    }
+
+    private void initWorld() {
+        currentWorld = new CellState[ROW][COL];
+        for(int i = 0;i < ROW;i++) {
+            for(int j = 0;j < COL;j++) {
+                currentWorld[i][j] = CellState.Dead;
+            }
+        }
+        nextWorld = new CellState[ROW][COL];
+        for(int i = 0;i < ROW;i++) {
+            for(int j=0;j<COL;j++) {
+                nextWorld[i][j] = CellState.Dead;
+            }
+        }
     }
 
     private void randomState(double rate, int seed){
@@ -36,7 +52,9 @@ public class World extends JPanel implements Runnable{
             for(int j = 0; j < COL; j++){
                 int x = random.nextInt(ROW);
                 int y = random.nextInt(COL);
-                currentWorld[x][y] = CellState.Alive;
+                if(isVaild(x, y)) {
+                    currentWorld[x][y] = CellState.Alive;
+                }
             }
         }
     }
@@ -66,7 +84,7 @@ public class World extends JPanel implements Runnable{
         return false;
     }
 
-    public void nextGeneration(int x, int y){
+    private void nextGeneration(int x, int y){
         int countState = 0;
         if(isVaild(x-1, y-1)&&(currentWorld[x-1][y-1]==CellState.Alive)){
             countState++;
