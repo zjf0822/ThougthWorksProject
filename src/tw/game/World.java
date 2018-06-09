@@ -8,9 +8,8 @@ import java.util.Random;
  * Created by zhoujifa-VAIO on 2018/6/9.
  */
 public class World extends JPanel implements Runnable {
-    private Object Graphics;
 
-    private static enum CellState{
+    private enum CellState{
         Alive,
         Dead;
     }
