@@ -16,7 +16,7 @@ public class World extends JPanel implements Runnable {
     }
     private final int ROW;
     private final int COL;
-    private final double RATE = 0.3;
+    private final double RATE = 0.1;
     private final int SEED = 47;
     private CellState [][] currentWorld;
     private CellState [][] nextWorld;
@@ -53,13 +53,11 @@ public class World extends JPanel implements Runnable {
         int times = (int)(ROW * COL * rate);
 
         Random random = new Random(seed);
-        for(int i = 0; i < ROW; i++){
-            for(int j = 0; j < COL; j++){
-                int x = random.nextInt(ROW);
-                int y = random.nextInt(COL);
-                if(isVaild(x, y)) {
-                    currentWorld[x][y] = CellState.Alive;
-                }
+        for(int i = 0; i < times; i++) {
+            int x = random.nextInt(ROW);
+            int y = random.nextInt(COL);
+            if(isVaild(x, y)) {
+                currentWorld[x][y] = CellState.Alive;
             }
         }
     }
@@ -110,7 +108,7 @@ public class World extends JPanel implements Runnable {
         }
     }
 
-    public boolean isVaild(int x,int y){
+    private boolean isVaild(int x,int y){
         if((x >= 0 && x < ROW) && (y >=0 && y < COL)){
             return true;
         }
