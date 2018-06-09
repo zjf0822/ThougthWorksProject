@@ -1,11 +1,12 @@
 package tw.game;
 
+import javax.swing.*;
 import java.util.Random;
 
 /**
  * Created by zhoujifa-VAIO on 2018/6/9.
  */
-public class World {
+public class World extends JPanel implements Runnable{
     private static enum CellState{
         Alive,
         Dead;
@@ -26,7 +27,7 @@ public class World {
 
     private void randomState(double rate, int seed){
         if(rate <= 0 || rate > 1){
-            rate=RATE;
+            rate = RATE;
         }
         int times = (int)(ROW * COL * rate);
 
@@ -38,5 +39,68 @@ public class World {
                 currentWorld[x][y] = CellState.Alive;
             }
         }
+    }
+
+    public void run(){
+        while(true) {
+            synchronized (this) {
+                for (int i = 0; i < ROW; i++) {
+                    for (int j = 0; j < COL; j++) {
+                        nextGeneration(i, j);
+                    }
+                }
+                currentWorld = nextWorld;
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public boolean isVaild(int x,int y){
+        if((x >= 0 && x < ROW) && (y >=0 && y < COL)){
+            return true;
+        }
+        return false;
+    }
+
+    public void nextGeneration(int x, int y){
+        int countState = 0;
+        if(isVaild(x-1, y-1)&&(currentWorld[x-1][y-1]==CellState.Alive)){
+            countState++;
+        }
+        if(isVaild(x,y-1) && (currentWorld[x][y-1] == CellState.Alive)){
+            countState++;
+        }
+        if(isVaild(x+1, y-1) && (currentWorld[x+1][y-1] == CellState.Alive)){
+            countState++;
+        }
+        if(isVaild(x+1, y) && (currentWorld[x+1][y] == CellState.Alive)){
+            countState++;
+        }
+        if(isVaild(x+1, y+1) && (currentWorld[x+1][y+1] == CellState.Alive)){
+            countState++;
+        }
+        if(isVaild(x,y+1) && (currentWorld[x][y+1] == CellState.Alive)){
+            countState++;
+        }
+        if(isVaild(x-1, y+1) && (currentWorld[x-1][y+1] == CellState.Alive)){
+            countState++;
+        }
+        if(isVaild(x-1, y) && (currentWorld[x-1][y] == CellState.Alive)){
+            countState++;
+        }
+        if(countState == 3) {
+            nextWorld[x][y] = CellState.Alive;
+        }
+        else if(countState == 2){
+            nextWorld[x][y] = currentWorld[x][y];
+        }
+        else {
+            nextWorld[x][y] = CellState.Dead;
+        }
+
     }
 }
